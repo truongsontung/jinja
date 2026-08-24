@@ -1444,7 +1444,7 @@ class CodeGenerator(NodeVisitor):
         child nodes, produce a string to write to the template module
         source.
         """
-        return repr(concat(group))
+        return self.safe_repr(concat(group))
 
     def _output_child_to_const(
         self, node: nodes.Expr, frame: Frame, finalize: _FinalizeInfo
