@@ -1695,7 +1695,9 @@ class CodeGenerator(NodeVisitor):
             else:
                 return "[" + ", ".join(items) + "]"
         if isinstance(val, dict):
-            items = [f"{self.safe_repr(k)}: {self.safe_repr(v)}" for k, v in val.items()]
+            items = [
+                f"{self.safe_repr(k)}: {self.safe_repr(v)}" for k, v in val.items()
+            ]
             return "{" + ", ".join(items) + "}"
         # For arbitrary objects: emit a safe placeholder
         # In production, this value would already be validated upstream
