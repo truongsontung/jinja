@@ -1668,7 +1668,7 @@ class CodeGenerator(NodeVisitor):
         else:
             self.write(self.safe_repr(val))
 
-    def safe_repr(self, val) -> str:
+    def safe_repr(self, val: t.Any) -> str:
         """repr() that prevents code injection via malicious __repr__.
 
         Only emits repr() for basic Python literal types whose repr output
