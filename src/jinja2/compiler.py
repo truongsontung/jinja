@@ -1678,6 +1678,7 @@ class CodeGenerator(NodeVisitor):
             r = repr(val)
             # Validate repr output is a valid Python literal
             import ast
+
             ast.literal_eval(r)
             return r
         except (ValueError, SyntaxError):
