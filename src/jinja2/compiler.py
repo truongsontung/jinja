@@ -1699,9 +1699,9 @@ class CodeGenerator(NodeVisitor):
                 f"{self.safe_repr(k)}: {self.safe_repr(v)}" for k, v in val.items()
             ]
             return "{" + ", ".join(items) + "}"
-        # For arbitrary objects: emit a safe placeholder
-        # In production, this value would already be validated upstream
-        return repr(val)
+        # For arbitrary objects: emit a safe placeholder instead of
+        # trusting their __repr__, which could inject arbitrary code
+        return f"<{type(val).__name__} object>"
 
     def visit_TemplateData(self, node: nodes.TemplateData, frame: Frame) -> None:
         try:
