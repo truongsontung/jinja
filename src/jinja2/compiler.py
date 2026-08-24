@@ -1666,11 +1666,27 @@ class CodeGenerator(NodeVisitor):
         if isinstance(val, float):
             self.write(str(val))
         else:
-            self.write(repr(val))
+            self.write(self.safe_repr(val))
+
+    def safe_repr(self, val) -> str:
+        """repr() that sanitizes output to prevent code injection in generated code.
+
+        Uses repr() for most types, but for objects with custom __repr__ that
+        could return unsafe Python code, falls back to a safe representation.
+        """
+        try:
+            r = repr(val)
+            # Validate repr output is a valid Python literal
+            import ast
+            ast.literal_eval(r)
+            return r
+        except (ValueError, SyntaxError):
+            # If repr() isn't a valid literal, use type name + hex id
+            return f"<{type(val).__name__} object at {hex(id(val))}>"
 
     def visit_TemplateData(self, node: nodes.TemplateData, frame: Frame) -> None:
         try:
-            self.write(repr(node.as_const(frame.eval_ctx)))
+            self.write(self.safe_repr(node.as_const(frame.eval_ctx)))
         except nodes.Impossible:
             self.write(
                 f"(Markup if context.eval_ctx.autoescape else identity)({node.data!r})"
